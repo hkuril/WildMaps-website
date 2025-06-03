@@ -13,11 +13,14 @@ const containerStyle = {
 };
 
 // Choose the starting viewpoint of the map.
-// Oxford UK: 51.752, -1.257
+// Oxford UK: 51.752, -1.257, zoom: 12
+// Borneo: 0.0, 114.0, zoom: 6
 const center = {
-  lat: 51.752, 
-  lng: -1.257,
+  lat: 0.0,
+  lng: 114.0,
 };
+//
+const startingZoom = 6;
 
 export default function MapApp() {
   // State tracker to determine if the map options have been set.
@@ -32,15 +35,15 @@ export default function MapApp() {
         //streetViewControl: false,
 		//// Disable full-screen button.
         //fullscreenControl: false,
-		//// Move zoom control to bottom left.
+		//// Move zoom control to bottom right.
         zoomControl: true,
         zoomControlOptions: {
-          position: window.google.maps.ControlPosition.LEFT_BOTTOM,
+          position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
         },
-		// Move map-type control to bottom right.
+		// Move map-type control to top right.
         mapTypeControl: true,
         mapTypeControlOptions: {
-          position: window.google.maps.ControlPosition.LEFT_BOTTOM,
+          position: window.google.maps.ControlPosition.RIGHT_TOP,
         },
 		// Show scale bar.
         scaleControl: true,
@@ -66,7 +69,7 @@ export default function MapApp() {
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
-          zoom={12}
+          zoom={startingZoom}
           mapTypeId="terrain"
           options={mapOptions}
         />
