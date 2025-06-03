@@ -47,11 +47,19 @@ export default function MapApp() {
 	  )}
 
       {/* Sidebar with transition */}
+	  <div
+  			style={{ width: showSidebar ? "min(50vw, 35rem)" : "0" }}
+  			className={`fixed top-0 right-0 h-full bg-white shadow-lg z-20 transition-all duration-300 ease-in-out overflow-hidden ${
+    		showSidebar ? "p-6" : "p-0"
+  			}`}
+	  >
+	  {/*
       <div
         className={`fixed top-0 right-0 h-full bg-white shadow-lg z-20 transition-all duration-300 ease-in-out ${
           showSidebar ? "w-1/2 p-6" : "w-0 p-0 overflow-hidden"
         }`}
       >
+	  */}
         <div
           className={`transition-opacity duration-300 ${
             showSidebar ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -90,17 +98,26 @@ export default function MapApp() {
 
           <div>
             <h3 className="text-md font-medium">Other base layers</h3>
-            {/* Future content */}
+	    	<p className="text-md leading-relaxed text-gray-700">
+    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  			</p>
           </div>
         </div>
       </div>
 
-      {/* Map container with smooth resizing */}
+      {/* Map container */}
+	  <div
+  		style={{
+    	width: showSidebar ? `calc(100vw - min(50vw, 35rem))` : "100vw",
+  		}}
+  		className="transition-all duration-300 ease-in-out h-full"
+		>
+	  {/*
       <div
         className={`transition-all duration-300 ease-in-out ${
           showSidebar ? "w-1/2" : "w-full"
         } h-full`}
-      >
+      >*/}
         <LoadScript
           googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
           onLoad={handleMapLoad}
