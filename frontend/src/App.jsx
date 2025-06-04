@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { Layers, X } from "lucide-react";
 
@@ -13,6 +13,30 @@ export default function MapApp() {
   const [mapOptions, setMapOptions] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [mapType, setMapType] = useState("terrain");
+
+  const addTileOnLoad = (mapInstance) => {
+    mapRef.current = mapInstance;
+  
+    fetch('/api/gee-map-url')
+      .then(res => res.json())
+      .then(({ tileUrl }) => {
+        const geeLayer = new window.google.maps.ImageMapType({
+          getTileUrl: (coord, zoom) =>
+            tileUrl
+              .replace('{z}', zoom)
+              .replace('{x}', coord.x)
+              .replace('{y}', coord.y),
+          tileSize: new window.google.maps.Size(256, 256),
+          name: 'Earth Engine',
+          opacity: 0.6,
+        });
+  
+        mapInstance.overlayMapTypes.insertAt(0, geeLayer);
+      })
+      .catch(err => {
+        console.error("Failed to load GEE tile layer:", err);
+      });
+  };
 
   const handleMapLoad = useCallback(() => {
     setMapOptions({
@@ -32,6 +56,27 @@ export default function MapApp() {
       mapTypeId: mapType,
     });
   }, [mapType]);
+
+  const mapRef = useRef(null);
+  
+  useEffect(() => {
+    fetch('/api/gee-map-url')
+      .then(res => res.json())
+      .then(({ tileUrl }) => {
+        const geeLayer = new window.google.maps.ImageMapType({
+          getTileUrl: (coord, zoom) =>
+            tileUrl
+              .replace('{z}', zoom)
+              .replace('{x}', coord.x)
+              .replace('{y}', coord.y),
+          tileSize: new window.google.maps.Size(256, 256),
+          name: 'Earth Engine',
+          opacity: 0.6,
+        });
+  
+        mapRef.current?.overlayMapTypes.insertAt(0, geeLayer);
+      });
+  }, []);
 
   return (
     <div className="relative w-screen h-screen font-sans overflow-hidden">
@@ -129,6 +174,7 @@ export default function MapApp() {
               zoom={startingZoom}
               options={mapOptions}
               mapTypeId={mapType}
+			  onLoad={addTileOnLoad}
             />
           ) : (
             <div style={{ width: '100%', height: '100%' }}>Loading map...</div>
